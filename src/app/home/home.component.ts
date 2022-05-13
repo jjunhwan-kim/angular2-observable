@@ -18,14 +18,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     // })
     const customIntervalObservable = new Observable(observer => {
       let count = 0;
-      setInterval(() => {
+      let intervalId = setInterval(() => {
+        console.log('Interval: ' + count);
+        if (count == 5) {
+          observer.complete();
+          //clearInterval(intervalId);
+        }
         observer.next(count);
+        if (count > 3) {
+          observer.error(new Error('Count is greater 3!'));
+        }
         count++;
       }, 1000);
     });
 
     this.firstObsSubscription = customIntervalObservable.subscribe(data => {
-      console.log(data);
+      console.log('Subscription: ' + data);
+    }, error => {
+      console.log(error);
+      alert(error.message);
+    }, () => {
+      console.log('Subscription Completed!');
     });
   }
 
